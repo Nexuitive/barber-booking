@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 import {
   collection,
@@ -22,6 +23,11 @@ export default function Home() {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [notes, setNotes] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const [successMessage, setSuccessMessage] =
+    useState("");
 
   const services = [
     {
@@ -126,9 +132,15 @@ export default function Home() {
       !customerName ||
       !customerPhone
     ) {
-      alert("Please complete your booking.");
+
+      setSuccessMessage(
+        "Please complete all booking details."
+      );
+
       return;
     }
+
+    setLoading(true);
 
     try {
 
@@ -182,13 +194,34 @@ export default function Home() {
 
       });
 
-      alert("Booking Confirmed Successfully!");
+      setSuccessMessage(
+
+`Thank you ${customerName}!
+
+Your appointment has been booked successfully.
+
+Please reach at least 5 minutes before the appointment.`
+
+      );
+
+      setSelectedServices([]);
+      setSelectedBarber("");
+      setSelectedTime("");
+      setCustomerName("");
+      setCustomerPhone("");
+      setNotes("");
 
     } catch (error) {
 
       console.log(error);
 
-      alert("Booking Failed");
+      setSuccessMessage(
+        "Booking failed. Please try again."
+      );
+
+    } finally {
+
+      setLoading(false);
 
     }
 
@@ -262,26 +295,26 @@ export default function Home() {
             <button
               key={service.name}
               onClick={() => toggleService(service.name)}
-              className={`w-full rounded-[24px] border transition p-3 flex items-center justify-between ${
+              className={`w-full rounded-[24px] border transition-all duration-300 p-4 flex items-center justify-between ${
                 selectedServices.includes(service.name)
-                  ? "bg-[#302E2D] border-[#C0A790]"
+                  ? "bg-[#302E2D] border-[#C0A790] scale-[1.01]"
                   : "bg-[#1A1918] border-[#433E3B] hover:border-[#C0A790]"
               }`}
             >
 
               <div className="flex items-center gap-3">
 
-                <div className="text-xl md:text-4xl">
+                <div className="text-2xl md:text-4xl">
                   {service.icon}
                 </div>
 
                 <div className="text-left">
 
-                  <h3 className="text-[15px] leading-[18px] md:text-2xl font-black">
+                  <h3 className="text-[16px] md:text-2xl font-black">
                     {service.name}
                   </h3>
 
-                  <p className="text-[#A8A29E] mt-1 text-[11px] leading-[16px] md:text-base">
+                  <p className="text-[#A8A29E] mt-1 text-xs md:text-base">
                     Premium Grooming Service
                   </p>
 
@@ -289,13 +322,13 @@ export default function Home() {
 
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
 
-                <p className="text-[14px] leading-[18px] md:text-2xl font-black text-[#C0A790]">
+                <p className="text-lg md:text-2xl font-black text-[#C0A790]">
                   {service.price}
                 </p>
 
-                <div className={`w-7 h-7 md:w-10 md:h-10 rounded-full flex items-center justify-center text-sm md:text-xl font-black ${
+                <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-sm md:text-xl font-black transition ${
                   selectedServices.includes(service.name)
                     ? "bg-[#E8D9BF] text-black"
                     : "bg-[#302E2D]"
@@ -341,9 +374,9 @@ export default function Home() {
             <button
               key={barber.name}
               onClick={() => setSelectedBarber(barber.name)}
-              className={`w-full rounded-[24px] border transition p-3 flex items-center justify-between ${
+              className={`w-full rounded-[24px] border transition-all duration-300 p-3 flex items-center justify-between ${
                 selectedBarber === barber.name
-                  ? "bg-[#302E2D] border-[#C0A790]"
+                  ? "bg-[#302E2D] border-[#C0A790] scale-[1.01]"
                   : "bg-[#1A1918] border-[#433E3B] hover:border-[#C0A790]"
               }`}
             >
@@ -528,96 +561,47 @@ export default function Home() {
 
           <button
             onClick={handleBooking}
-            className="mt-8 w-full bg-[#E8D9BF] hover:bg-[#C0A790] transition text-black px-8 py-4 rounded-2xl text-base font-black"
+            disabled={loading}
+            className="mt-8 w-full bg-[#E8D9BF] hover:bg-[#C0A790] transition-all duration-300 text-black px-8 py-4 rounded-2xl text-base font-black flex items-center justify-center gap-3 disabled:opacity-60 hover:scale-[1.02]"
           >
-            Confirm Booking
+
+            {loading ? (
+
+              <>
+
+                <Loader2 className="animate-spin w-5 h-5" />
+
+                Processing Booking...
+
+              </>
+
+            ) : (
+
+              "Confirm Booking"
+
+            )}
+
           </button>
 
-        </div>
+          {successMessage && (
 
-      </section>
+            <div className="mt-6 bg-[#060707] border border-[#C0A790] rounded-2xl p-5 text-center animate-pulse">
 
+              <h3 className="text-[#C0A790] font-black text-lg mb-2">
 
-      {/* REVIEWS */}
+                Appointment Status
 
-      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-20">
+              </h3>
 
-        <div className="mb-8">
+              <p className="text-[#F5F5F5] leading-7 whitespace-pre-line">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
-            Reviews
-          </p>
-
-          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
-            Customer Reviews
-          </h2>
-
-        </div>
-
-        <div className="grid grid-cols-1 gap-5">
-
-          {[
-            {
-              name: "Ahsan",
-              stars: 5,
-              review:
-                "Excellent service and premium environment.",
-            },
-
-            {
-              name: "Hamza",
-              stars: 4,
-              review:
-                "Best barber experience in the city.",
-            },
-
-            {
-              name: "Usman",
-              stars: 5,
-              review:
-                "Professional staff and luxury feel.",
-            },
-
-          ].map((item, index) => (
-
-            <div
-              key={index}
-              className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] p-5"
-            >
-
-              <div className="flex items-center justify-between">
-
-                <div>
-
-                  <h3 className="text-lg font-black">
-                    {item.name}
-                  </h3>
-
-                  <div className="flex items-center gap-1 mt-2 text-[#C0A790] text-sm">
-
-                    {"★".repeat(item.stars)}
-
-                  </div>
-
-                </div>
-
-                <div className="w-12 h-12 rounded-full bg-[#302E2D] flex items-center justify-center text-[#C0A790] font-black text-lg">
-
-                  {item.name.charAt(0)}
-
-                </div>
-
-              </div>
-
-              <p className="text-[#A8A29E] text-sm leading-7 mt-5">
-
-                {item.review}
+                {successMessage}
 
               </p>
 
             </div>
 
-          ))}
+          )}
 
         </div>
 
