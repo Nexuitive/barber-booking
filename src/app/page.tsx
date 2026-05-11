@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+
+import {
+  Loader2,
+  Scissors,
+  Sparkles,
+  SprayCan,
+  VenetianMask,
+  BadgeCent,
+} from "lucide-react";
 
 import {
   collection,
@@ -33,31 +41,31 @@ export default function Home() {
     {
       name: "Hair Cut",
       price: "Rs 800",
-      icon: "✂️",
+      icon: Scissors,
     },
 
     {
       name: "Shaving",
       price: "Rs 500",
-      icon: "🪒",
+      icon: VenetianMask,
     },
 
     {
       name: "Treatment",
       price: "Rs 2500",
-      icon: "🧴",
+      icon: SprayCan,
     },
 
     {
       name: "Beard Care",
       price: "Rs 1200",
-      icon: "🧔",
+      icon: BadgeCent,
     },
 
     {
       name: "Hair Style",
       price: "Rs 1800",
-      icon: "💈",
+      icon: Sparkles,
     },
   ];
 
@@ -304,8 +312,13 @@ Please reach at least 5 minutes before the appointment.`
 
               <div className="flex items-center gap-3">
 
-                <div className="text-2xl md:text-4xl">
-                  {service.icon}
+                <div className="w-14 h-14 rounded-2xl bg-[#302E2D] border border-[#433E3B] flex items-center justify-center">
+
+                  <service.icon
+                    className="w-7 h-7 text-[#C0A790]"
+                    strokeWidth={2.2}
+                  />
+
                 </div>
 
                 <div className="text-left">
@@ -585,9 +598,9 @@ Please reach at least 5 minutes before the appointment.`
 
           {successMessage && (
 
-            <div className="mt-6 bg-[#060707] border border-[#C0A790] rounded-2xl p-5 text-center animate-pulse">
+            <div className="mt-6 bg-[#060707] border border-[#C0A790] rounded-2xl p-5 text-center">
 
-              <h3 className="text-[#C0A790] font-black text-lg mb-2">
+              <h3 className="text-[#C0A790] font-black text-lg mb-3">
 
                 Appointment Status
 
