@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Loader2,
@@ -14,6 +14,7 @@ import {
 import {
   collection,
   addDoc,
+  getDocs,
 } from "firebase/firestore";
 
 import { db } from "./firebase";
@@ -36,6 +37,9 @@ export default function Home() {
 
   const [successMessage, setSuccessMessage] =
     useState("");
+
+  const [bookedSlots, setBookedSlots] =
+    useState<string[]>([]);
 
   const services = [
     {
@@ -97,6 +101,45 @@ export default function Home() {
     "5:00 PM",
   ];
 
+  useEffect(() => {
+
+    const fetchBookings = async () => {
+
+      if (!selectedBarber) return;
+
+      const snapshot = await getDocs(
+        collection(db, "bookings")
+      );
+
+      const slots: string[] = [];
+
+      snapshot.forEach((doc) => {
+
+        const booking = doc.data();
+
+        if (
+
+          booking.barber === selectedBarber &&
+
+          booking.date ===
+            selectedDate.toDateString()
+
+        ) {
+
+          slots.push(booking.time);
+
+        }
+
+      });
+
+      setBookedSlots(slots);
+
+    };
+
+    fetchBookings();
+
+  }, [selectedBarber, selectedDate]);
+
   const toggleService = (service: string) => {
 
     if (selectedServices.includes(service)) {
@@ -139,7 +182,6 @@ export default function Home() {
       !selectedTime ||
       !customerName ||
       !customerPhone
-      
     ) {
 
       setSuccessMessage(
@@ -148,17 +190,16 @@ export default function Home() {
 
       return;
     }
+
     if (customerPhone.length < 11) {
 
-    setSuccessMessage(
-      "Please enter a valid phone number."
-    );
+      setSuccessMessage(
+        "Please enter a valid phone number."
+      );
 
-    return;
+      return;
 
-  }
-
-  setLoading(true);
+    }
 
     setLoading(true);
 
@@ -472,30 +513,54 @@ Please reach at least 5 minutes before the appointment.`
         <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] p-4">
 
           <Calendar
-  minDate={new Date()}
-  onChange={(value) =>
-    setSelectedDate(value as Date)
-  }
-  value={selectedDate}
-/>
+            minDate={new Date()}
+            onChange={(value) =>
+              setSelectedDate(value as Date)
+            }
+            value={selectedDate}
+          />
 
           <div className="grid grid-cols-2 gap-3 mt-6">
 
-            {timings.map((time) => (
+            {timings.map((time) => {
 
-              <button
-                key={time}
-                onClick={() => setSelectedTime(time)}
-                className={`py-3 text-sm rounded-2xl font-bold transition ${
-                  selectedTime === time
-                    ? "bg-[#E8D9BF] text-black"
-                    : "border border-[#433E3B] hover:border-[#C0A790]"
-                }`}
-              >
-                {time}
-              </button>
+              const isBooked =
+                bookedSlots.includes(time);
 
-            ))}
+              return (
+
+                <button
+                  key={time}
+
+                  disabled={isBooked}
+
+                  onClick={() =>
+                    setSelectedTime(time)
+                  }
+
+                  className={`py-3 text-sm rounded-2xl font-bold transition border
+
+                  ${
+                    isBooked
+                      ? "bg-[#302E2D] text-[#666] border-[#302E2D] opacity-40 cursor-not-allowed"
+
+                      : selectedTime === time
+
+                      ? "bg-[#E8D9BF] text-black border-[#E8D9BF]"
+
+                      : "border-[#433E3B] hover:border-[#C0A790]"
+                  }`}
+                >
+
+                  {isBooked
+                    ? `${time} • Booked`
+                    : time}
+
+                </button>
+
+              );
+
+            })}
 
           </div>
 
@@ -533,21 +598,21 @@ Please reach at least 5 minutes before the appointment.`
           />
 
           <input
-  type="tel"
-  inputMode="numeric"
-  pattern="[0-9+ ]*"
-  placeholder="Phone Number"
-  value={customerPhone}
-  onChange={(e) => {
+            type="tel"
+            inputMode="numeric"
+            pattern="[0-9+ ]*"
+            placeholder="Phone Number"
+            value={customerPhone}
+            onChange={(e) => {
 
-    const value =
-      e.target.value.replace(/[^0-9+]/g, "");
+              const value =
+                e.target.value.replace(/[^0-9+]/g, "");
 
-    setCustomerPhone(value);
+              setCustomerPhone(value);
 
-  }}
-  className="w-full bg-[#060707] border border-[#433E3B] rounded-2xl px-5 py-4 outline-none focus:border-[#C0A790]"
-/>
+            }}
+            className="w-full bg-[#060707] border border-[#433E3B] rounded-2xl px-5 py-4 outline-none focus:border-[#C0A790]"
+          />
 
           <textarea
             placeholder="Notes (Optional)"
