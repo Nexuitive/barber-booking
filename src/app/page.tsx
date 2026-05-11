@@ -12,7 +12,7 @@ import { db } from "./firebase";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-export default function BookingPage() {
+export default function Home() {
 
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedBarber, setSelectedBarber] = useState("");
@@ -158,14 +158,15 @@ export default function BookingPage() {
 
   return (
 
-    <main className="bg-[#060707] text-[#F5F5F5] min-h-screen">
+    <main className="bg-[#060707] text-[#F5F5F5] min-h-screen overflow-hidden">
 
-      {/* Navbar */}
-      <nav className="border-b border-[#433E3B]">
+      {/* NAVBAR */}
 
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-6 flex items-center justify-center">
+      <nav className="border-b border-[#433E3B] sticky top-0 z-50 bg-[#060707]/90 backdrop-blur-xl">
 
-          <h1 className="text-3xl md:text-4xl font-black">
+        <div className="max-w-7xl mx-auto px-4 md:px-12 py-5 flex items-center justify-center">
+
+          <h1 className="text-2xl md:text-4xl font-black tracking-tight">
             Trim<span className="text-[#C0A790]">Book</span>
           </h1>
 
@@ -174,14 +175,15 @@ export default function BookingPage() {
       </nav>
 
 
-      {/* Hero */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-16 text-center">
+      {/* HERO */}
 
-        <p className="text-[#C0A790] uppercase tracking-[4px] font-semibold mb-5">
+      <section className="max-w-7xl mx-auto px-4 md:px-12 pt-10 pb-10 md:pt-20 md:pb-16 text-center">
+
+        <p className="text-[#C0A790] uppercase tracking-[4px] font-semibold mb-4 text-[10px] md:text-sm">
           Premium Barber Booking
         </p>
 
-        <h1 className="text-5xl md:text-7xl font-black leading-tight">
+        <h1 className="text-[42px] leading-[46px] md:text-7xl md:leading-[90px] font-black">
 
           Book Your
           <br />
@@ -190,7 +192,7 @@ export default function BookingPage() {
 
         </h1>
 
-        <p className="text-[#A8A29E] text-lg leading-9 mt-8 max-w-3xl mx-auto">
+        <p className="text-[#A8A29E] text-sm md:text-lg leading-7 md:leading-9 mt-5 max-w-3xl mx-auto">
 
           Select services, choose barber and confirm your booking instantly.
 
@@ -199,48 +201,49 @@ export default function BookingPage() {
       </section>
 
 
-      {/* Services */}
-      <section className="max-w-5xl mx-auto px-6 md:px-12 pb-20">
+      {/* SERVICES */}
 
-        <div className="mb-10">
+      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3">
+        <div className="mb-8">
+
+          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
             Services
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-black">
+          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
             Select Services
           </h2>
 
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-4">
 
           {services.map((service) => (
 
             <button
               key={service.name}
               onClick={() => toggleService(service.name)}
-              className={`w-full rounded-[28px] border transition p-6 flex items-center justify-between ${
+              className={`w-full rounded-[24px] md:rounded-[35px] border transition p-3 md:p-6 flex items-center justify-between gap-2 ${
                 selectedServices.includes(service.name)
                   ? "bg-[#302E2D] border-[#C0A790]"
                   : "bg-[#1A1918] border-[#433E3B] hover:border-[#C0A790]"
               }`}
             >
 
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-3">
 
-                <div className="text-4xl">
+                <div className="text-xl md:text-4xl">
                   {service.icon}
                 </div>
 
                 <div className="text-left">
 
-                  <h3 className="text-2xl font-black">
+                  <h3 className="text-[15px] leading-[18px] md:text-2xl font-black">
                     {service.name}
                   </h3>
 
-                  <p className="text-[#A8A29E] mt-2">
+                  <p className="text-[#A8A29E] mt-1 text-[11px] leading-[16px] md:text-base">
                     Premium Grooming Service
                   </p>
 
@@ -248,13 +251,13 @@ export default function BookingPage() {
 
               </div>
 
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-2">
 
-                <p className="text-[#C0A790] text-2xl font-black">
+                <p className="text-[14px] leading-[18px] md:text-2xl font-black text-[#C0A790]">
                   {service.price}
                 </p>
 
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl font-black ${
+                <div className={`w-7 h-7 md:w-10 md:h-10 rounded-full flex items-center justify-center text-sm md:text-xl font-black ${
                   selectedServices.includes(service.name)
                     ? "bg-[#E8D9BF] text-black"
                     : "bg-[#302E2D]"
@@ -277,29 +280,30 @@ export default function BookingPage() {
       </section>
 
 
-      {/* Barbers */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 pb-20">
+      {/* BARBERS */}
 
-        <div className="mb-10">
+      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3">
+        <div className="mb-8">
+
+          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
             Barbers
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-black">
+          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
             Choose Barber
           </h2>
 
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
           {barbers.map((barber) => (
 
             <div
               key={barber.name}
               onClick={() => setSelectedBarber(barber.name)}
-              className={`rounded-[35px] overflow-hidden border cursor-pointer transition ${
+              className={`rounded-[24px] md:rounded-[35px] overflow-hidden border cursor-pointer transition ${
                 selectedBarber === barber.name
                   ? "border-[#C0A790]"
                   : "border-[#433E3B] hover:border-[#C0A790]"
@@ -309,16 +313,16 @@ export default function BookingPage() {
               <img
                 src={barber.image}
                 alt={barber.name}
-                className="w-full h-[380px] object-cover"
+                className="w-full h-[180px] md:h-[380px] object-cover"
               />
 
-              <div className="bg-[#1A1918] p-7">
+              <div className="bg-[#1A1918] p-4 md:p-7">
 
-                <h3 className="text-3xl font-black">
+                <h3 className="text-xl md:text-3xl font-black">
                   {barber.name}
                 </h3>
 
-                <p className="text-[#A8A29E] mt-3">
+                <p className="text-[#A8A29E] mt-2 text-sm md:text-base">
                   Professional Barber
                 </p>
 
@@ -333,25 +337,25 @@ export default function BookingPage() {
       </section>
 
 
-      {/* Date & Time */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 pb-20">
+      {/* DATE & TIME */}
 
-        <div className="mb-10">
+      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3">
+        <div className="mb-8">
+
+          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
             Schedule
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-black">
+          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
             Select Date & Time
           </h2>
 
         </div>
 
-        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[35px] p-8">
+        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-4 md:p-8">
 
-          {/* Calendar */}
-          <div className="bg-[#060707] border border-[#433E3B] rounded-[30px] p-6">
+          <div className="bg-[#060707] border border-[#433E3B] rounded-[24px] md:rounded-[30px] p-2 md:p-6">
 
             <Calendar
               onChange={(value) => setSelectedDate(value as Date)}
@@ -361,15 +365,14 @@ export default function BookingPage() {
 
           </div>
 
-          {/* Time */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
 
             {timings.map((time) => (
 
               <button
                 key={time}
                 onClick={() => setSelectedTime(time)}
-                className={`py-5 rounded-2xl font-bold transition ${
+                className={`py-3 md:py-5 text-sm md:text-base rounded-2xl font-bold transition ${
                   selectedTime === time
                     ? "bg-[#E8D9BF] text-black"
                     : "border border-[#433E3B] hover:border-[#C0A790]"
@@ -387,16 +390,17 @@ export default function BookingPage() {
       </section>
 
 
-      {/* Booking */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 pb-20">
+      {/* BOOKING */}
 
-        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[35px] p-10 text-center">
+      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-4">
+        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-6 md:p-10 text-center">
+
+          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-4 text-[10px]">
             Ready To Book?
           </p>
 
-          <h2 className="text-4xl md:text-6xl font-black leading-tight">
+          <h2 className="text-[32px] leading-[36px] md:text-6xl font-black">
 
             Confirm Your
             <br />
@@ -405,13 +409,13 @@ export default function BookingPage() {
 
           </h2>
 
-          <div className="mt-10">
+          <div className="mt-8">
 
-            <p className="text-[#A8A29E] text-lg">
+            <p className="text-[#A8A29E] text-base md:text-lg">
               Total Amount
             </p>
 
-            <h2 className="text-5xl font-black text-[#C0A790] mt-3">
+            <h2 className="text-3xl md:text-5xl font-black text-[#C0A790] mt-3">
               Rs {totalAmount}
             </h2>
 
@@ -419,7 +423,7 @@ export default function BookingPage() {
 
           <button
             onClick={handleBooking}
-            className="mt-10 bg-[#E8D9BF] hover:bg-[#C0A790] transition text-black px-12 py-5 rounded-2xl text-xl font-black"
+            className="mt-8 md:mt-10 w-full md:w-auto bg-[#E8D9BF] hover:bg-[#C0A790] transition text-black px-8 py-4 rounded-2xl text-base md:text-xl font-black"
           >
             Confirm Booking
           </button>
@@ -429,50 +433,51 @@ export default function BookingPage() {
       </section>
 
 
-      {/* Offers */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 pb-20">
+      {/* OFFERS */}
 
-        <div className="mb-10">
+      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3">
+        <div className="mb-8">
+
+          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
             Offers
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-black">
+          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
             Latest Offers
           </h2>
 
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-          <div className="bg-[#1A1918] border border-[#433E3B] rounded-[35px] p-10">
+          <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-5 md:p-10">
 
-            <p className="text-[#C0A790] font-semibold">
+            <p className="text-[#C0A790] font-semibold text-sm">
               LIMITED OFFER
             </p>
 
-            <h3 className="text-4xl font-black mt-5">
+            <h3 className="text-2xl md:text-4xl font-black mt-5">
               Hair Cut + Beard
             </h3>
 
-            <p className="text-[#A8A29E] mt-5 text-lg leading-8">
+            <p className="text-[#A8A29E] mt-5 text-sm md:text-lg leading-7 md:leading-8">
               Premium grooming package with discounted pricing.
             </p>
 
           </div>
 
-          <div className="bg-[#1A1918] border border-[#433E3B] rounded-[35px] p-10">
+          <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-5 md:p-10">
 
-            <p className="text-[#C0A790] font-semibold">
+            <p className="text-[#C0A790] font-semibold text-sm">
               PREMIUM PACKAGE
             </p>
 
-            <h3 className="text-4xl font-black mt-5">
+            <h3 className="text-2xl md:text-4xl font-black mt-5">
               Full Grooming
             </h3>
 
-            <p className="text-[#A8A29E] mt-5 text-lg leading-8">
+            <p className="text-[#A8A29E] mt-5 text-sm md:text-lg leading-7 md:leading-8">
               Facial, massage and premium styling package.
             </p>
 
@@ -483,22 +488,23 @@ export default function BookingPage() {
       </section>
 
 
-      {/* Reviews */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 pb-20">
+      {/* REVIEWS */}
 
-        <div className="mb-10">
+      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3">
+        <div className="mb-8">
+
+          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
             Reviews
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-black">
+          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
             Customer Reviews
           </h2>
 
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
           {[
             "Excellent service and premium environment.",
@@ -508,14 +514,14 @@ export default function BookingPage() {
 
             <div
               key={index}
-              className="bg-[#1A1918] border border-[#433E3B] rounded-[35px] p-8"
+              className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-5 md:p-8"
             >
 
-              <p className="text-[#C0A790] text-2xl">
+              <p className="text-[#C0A790] text-xl md:text-2xl">
                 ★★★★★
               </p>
 
-              <p className="text-[#A8A29E] text-lg leading-9 mt-6">
+              <p className="text-[#A8A29E] text-sm md:text-lg leading-7 md:leading-9 mt-5">
                 {review}
               </p>
 
@@ -528,22 +534,23 @@ export default function BookingPage() {
       </section>
 
 
-      {/* Contact */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 pb-28">
+      {/* CONTACT */}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-20 md:pb-28">
 
-          <div className="bg-[#1A1918] border border-[#433E3B] rounded-[35px] p-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-10">
 
-            <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3">
+          <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-5 md:p-10">
+
+            <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
               Contact
             </p>
 
-            <h2 className="text-4xl font-black">
+            <h2 className="text-[32px] leading-[36px] md:text-4xl font-black">
               Contact Details
             </h2>
 
-            <div className="space-y-6 mt-10 text-lg">
+            <div className="space-y-5 mt-8 text-sm md:text-lg">
 
               <p>
                 📍 Karachi, Pakistan
@@ -561,11 +568,11 @@ export default function BookingPage() {
 
           </div>
 
-          <div className="overflow-hidden rounded-[35px] border border-[#433E3B]">
+          <div className="overflow-hidden rounded-[24px] md:rounded-[35px] border border-[#433E3B]">
 
             <iframe
               src="https://maps.google.com/maps?q=karachi&t=&z=13&ie=UTF8&iwloc=&output=embed"
-              className="w-full h-full min-h-[400px]"
+              className="w-full h-full min-h-[250px] md:min-h-[400px]"
               loading="lazy"
             ></iframe>
 
