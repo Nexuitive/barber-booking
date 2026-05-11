@@ -19,6 +19,10 @@ export default function Home() {
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [notes, setNotes] = useState("");
+
   const services = [
     {
       name: "Hair Cut",
@@ -118,7 +122,9 @@ export default function Home() {
     if (
       selectedServices.length === 0 ||
       !selectedBarber ||
-      !selectedTime
+      !selectedTime ||
+      !customerName ||
+      !customerPhone
     ) {
       alert("Please complete your booking.");
       return;
@@ -127,6 +133,10 @@ export default function Home() {
     try {
 
       await addDoc(collection(db, "bookings"), {
+
+        customerName,
+        customerPhone,
+        notes,
 
         services: selectedServices,
 
@@ -141,6 +151,34 @@ export default function Home() {
 
         createdAt:
           new Date().toISOString(),
+
+      });
+
+      await fetch("/api/send-whatsapp", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+
+          customerName,
+          customerPhone,
+          notes,
+
+          services: selectedServices,
+
+          barber: selectedBarber,
+
+          date: selectedDate.toDateString(),
+
+          time: selectedTime,
+
+          total: totalAmount,
+
+        }),
 
       });
 
@@ -224,7 +262,7 @@ export default function Home() {
             <button
               key={service.name}
               onClick={() => toggleService(service.name)}
-              className={`w-full rounded-[24px] md:rounded-[35px] border transition p-3 md:p-6 flex items-center justify-between gap-2 ${
+              className={`w-full rounded-[24px] border transition p-3 flex items-center justify-between ${
                 selectedServices.includes(service.name)
                   ? "bg-[#302E2D] border-[#C0A790]"
                   : "bg-[#1A1918] border-[#433E3B] hover:border-[#C0A790]"
@@ -282,7 +320,7 @@ export default function Home() {
 
       {/* BARBERS */}
 
-      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
+      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
 
         <div className="mb-8">
 
@@ -301,54 +339,54 @@ export default function Home() {
           {barbers.map((barber) => (
 
             <button
-  key={barber.name}
-  onClick={() => setSelectedBarber(barber.name)}
-  className={`w-full rounded-[24px] border transition p-3 flex items-center justify-between ${
-    selectedBarber === barber.name
-      ? "bg-[#302E2D] border-[#C0A790]"
-      : "bg-[#1A1918] border-[#433E3B] hover:border-[#C0A790]"
-  }`}
->
+              key={barber.name}
+              onClick={() => setSelectedBarber(barber.name)}
+              className={`w-full rounded-[24px] border transition p-3 flex items-center justify-between ${
+                selectedBarber === barber.name
+                  ? "bg-[#302E2D] border-[#C0A790]"
+                  : "bg-[#1A1918] border-[#433E3B] hover:border-[#C0A790]"
+              }`}
+            >
 
-  <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3">
 
-    <img
-      src={barber.image}
-      alt={barber.name}
-      className="w-20 h-20 rounded-2xl object-cover"
-    />
+                <img
+                  src={barber.image}
+                  alt={barber.name}
+                  className="w-20 h-20 rounded-2xl object-cover"
+                />
 
-    <div className="text-left">
+                <div className="text-left">
 
-      <h3 className="text-lg font-black">
-        {barber.name}
-      </h3>
+                  <h3 className="text-lg font-black">
+                    {barber.name}
+                  </h3>
 
-      <p className="text-[#A8A29E] text-xs mt-1">
-        Professional Barber
-      </p>
+                  <p className="text-[#A8A29E] text-xs mt-1">
+                    Professional Barber
+                  </p>
 
-      <div className="flex items-center gap-1 mt-2 text-[#C0A790] text-sm">
-        ★★★★★
-      </div>
+                  <div className="flex items-center gap-1 mt-2 text-[#C0A790] text-sm">
+                    ★★★★★
+                  </div>
 
-    </div>
+                </div>
 
-  </div>
+              </div>
 
-  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black ${
-    selectedBarber === barber.name
-      ? "bg-[#E8D9BF] text-black"
-      : "bg-[#302E2D]"
-  }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black ${
+                selectedBarber === barber.name
+                  ? "bg-[#E8D9BF] text-black"
+                  : "bg-[#302E2D]"
+              }`}>
 
-    {selectedBarber === barber.name
-      ? "✓"
-      : "+"}
+                {selectedBarber === barber.name
+                  ? "✓"
+                  : "+"}
 
-  </div>
+              </div>
 
-</button>
+            </button>
 
           ))}
 
@@ -359,7 +397,7 @@ export default function Home() {
 
       {/* DATE & TIME */}
 
-      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
+      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
 
         <div className="mb-8">
 
@@ -373,26 +411,21 @@ export default function Home() {
 
         </div>
 
-        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-4 md:p-8">
+        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] p-4">
 
-          <div className="bg-[#060707] border border-[#433E3B] rounded-[24px] md:rounded-[30px] p-2 md:p-6">
+          <Calendar
+            onChange={(value) => setSelectedDate(value as Date)}
+            value={selectedDate}
+          />
 
-            <Calendar
-              onChange={(value) => setSelectedDate(value as Date)}
-              value={selectedDate}
-              className="w-full"
-            />
-
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+          <div className="grid grid-cols-2 gap-3 mt-6">
 
             {timings.map((time) => (
 
               <button
                 key={time}
                 onClick={() => setSelectedTime(time)}
-                className={`py-3 md:py-5 text-sm md:text-base rounded-2xl font-bold transition ${
+                className={`py-3 text-sm rounded-2xl font-bold transition ${
                   selectedTime === time
                     ? "bg-[#E8D9BF] text-black"
                     : "border border-[#433E3B] hover:border-[#C0A790]"
@@ -410,11 +443,63 @@ export default function Home() {
       </section>
 
 
+      {/* CUSTOMER DETAILS */}
+
+      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
+
+        <div className="mb-8">
+
+          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
+            Customer
+          </p>
+
+          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
+            Your Details
+          </h2>
+
+        </div>
+
+        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] p-5 space-y-5">
+
+          <input
+            type="text"
+            placeholder="Your Name"
+            value={customerName}
+            onChange={(e) =>
+              setCustomerName(e.target.value)
+            }
+            className="w-full bg-[#060707] border border-[#433E3B] rounded-2xl px-5 py-4 outline-none focus:border-[#C0A790]"
+          />
+
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            value={customerPhone}
+            onChange={(e) =>
+              setCustomerPhone(e.target.value)
+            }
+            className="w-full bg-[#060707] border border-[#433E3B] rounded-2xl px-5 py-4 outline-none focus:border-[#C0A790]"
+          />
+
+          <textarea
+            placeholder="Notes (Optional)"
+            value={notes}
+            onChange={(e) =>
+              setNotes(e.target.value)
+            }
+            className="w-full bg-[#060707] border border-[#433E3B] rounded-2xl px-5 py-4 outline-none focus:border-[#C0A790] min-h-[120px]"
+          />
+
+        </div>
+
+      </section>
+
+
       {/* BOOKING */}
 
-      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
+      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
 
-        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-6 md:p-10 text-center">
+        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] p-6 text-center">
 
           <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-4 text-[10px]">
             Ready To Book?
@@ -431,7 +516,7 @@ export default function Home() {
 
           <div className="mt-8">
 
-            <p className="text-[#A8A29E] text-base md:text-lg">
+            <p className="text-[#A8A29E] text-base">
               Total Amount
             </p>
 
@@ -443,7 +528,7 @@ export default function Home() {
 
           <button
             onClick={handleBooking}
-            className="mt-8 md:mt-10 w-full md:w-auto bg-[#E8D9BF] hover:bg-[#C0A790] transition text-black px-8 py-4 rounded-2xl text-base md:text-xl font-black"
+            className="mt-8 w-full bg-[#E8D9BF] hover:bg-[#C0A790] transition text-black px-8 py-4 rounded-2xl text-base font-black"
           >
             Confirm Booking
           </button>
@@ -453,64 +538,9 @@ export default function Home() {
       </section>
 
 
-      {/* OFFERS */}
-
-      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
-
-        <div className="mb-8">
-
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
-            Offers
-          </p>
-
-          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
-            Latest Offers
-          </h2>
-
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-          <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-5 md:p-10">
-
-            <p className="text-[#C0A790] font-semibold text-sm">
-              LIMITED OFFER
-            </p>
-
-            <h3 className="text-2xl md:text-4xl font-black mt-5">
-              Hair Cut + Beard
-            </h3>
-
-            <p className="text-[#A8A29E] mt-5 text-sm md:text-lg leading-7 md:leading-8">
-              Premium grooming package with discounted pricing.
-            </p>
-
-          </div>
-
-          <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-5 md:p-10">
-
-            <p className="text-[#C0A790] font-semibold text-sm">
-              PREMIUM PACKAGE
-            </p>
-
-            <h3 className="text-2xl md:text-4xl font-black mt-5">
-              Full Grooming
-            </h3>
-
-            <p className="text-[#A8A29E] mt-5 text-sm md:text-lg leading-7 md:leading-8">
-              Facial, massage and premium styling package.
-            </p>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
       {/* REVIEWS */}
 
-      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
+      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-20">
 
         <div className="mb-8">
 
@@ -524,118 +554,70 @@ export default function Home() {
 
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 gap-5">
 
           {[
             {
-    name: "Ahsan",
-    stars: 5,
-    review:
-      "Excellent service and premium environment.",
-  },
+              name: "Ahsan",
+              stars: 5,
+              review:
+                "Excellent service and premium environment.",
+            },
 
-  {
-    name: "Hamza",
-    stars: 4,
-    review:
-      "Best barber experience in the city.",
-  },
+            {
+              name: "Hamza",
+              stars: 4,
+              review:
+                "Best barber experience in the city.",
+            },
 
-  {
-    name: "Usman",
-    stars: 5,
-    review:
-      "Professional staff and luxury feel.",
-  },
-].map((item, index) => (
+            {
+              name: "Usman",
+              stars: 5,
+              review:
+                "Professional staff and luxury feel.",
+            },
+
+          ].map((item, index) => (
 
             <div
               key={index}
-  className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-5 md:p-8"
->
+              className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] p-5"
+            >
 
-  <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between">
 
-    <div>
+                <div>
 
-      <h3 className="text-lg md:text-2xl font-black">
-        {item.name}
-      </h3>
+                  <h3 className="text-lg font-black">
+                    {item.name}
+                  </h3>
 
-      <div className="flex items-center gap-1 mt-2 text-[#C0A790] text-sm md:text-base">
+                  <div className="flex items-center gap-1 mt-2 text-[#C0A790] text-sm">
 
-        {"★".repeat(item.stars)}
+                    {"★".repeat(item.stars)}
 
-      </div>
+                  </div>
 
-    </div>
+                </div>
 
-    <div className="w-12 h-12 rounded-full bg-[#302E2D] flex items-center justify-center text-[#C0A790] font-black text-lg">
+                <div className="w-12 h-12 rounded-full bg-[#302E2D] flex items-center justify-center text-[#C0A790] font-black text-lg">
 
-      {item.name.charAt(0)}
+                  {item.name.charAt(0)}
 
-    </div>
+                </div>
 
-  </div>
+              </div>
 
-  <p className="text-[#A8A29E] text-sm md:text-lg leading-7 md:leading-9 mt-5">
+              <p className="text-[#A8A29E] text-sm leading-7 mt-5">
 
-    {item.review}
+                {item.review}
 
-  </p>
-
-</div>
-
-          ))}
-
-        </div>
-
-      </section>
-
-
-      {/* CONTACT */}
-
-      <section className="max-w-7xl mx-auto px-4 md:px-12 pb-20 md:pb-28">
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-10">
-
-          <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-5 md:p-10">
-
-            <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
-              Contact
-            </p>
-
-            <h2 className="text-[32px] leading-[36px] md:text-4xl font-black">
-              Contact Details
-            </h2>
-
-            <div className="space-y-5 mt-8 text-sm md:text-lg">
-
-              <p>
-                📍 Karachi, Pakistan
-              </p>
-
-              <p>
-                📞 +92 300 1234567
-              </p>
-
-              <p>
-                ✉️ contact@trimbook.com
               </p>
 
             </div>
 
-          </div>
-
-          <div className="overflow-hidden rounded-[24px] md:rounded-[35px] border border-[#433E3B]">
-
-            <iframe
-              src="https://maps.google.com/maps?q=karachi&t=&z=13&ie=UTF8&iwloc=&output=embed"
-              className="w-full h-full min-h-[250px] md:min-h-[400px]"
-              loading="lazy"
-            ></iframe>
-
-          </div>
+          ))}
 
         </div>
 
