@@ -139,6 +139,7 @@ export default function Home() {
       !selectedTime ||
       !customerName ||
       !customerPhone
+      
     ) {
 
       setSuccessMessage(
@@ -147,6 +148,17 @@ export default function Home() {
 
       return;
     }
+    if (customerPhone.length < 11) {
+
+    setSuccessMessage(
+      "Please enter a valid phone number."
+    );
+
+    return;
+
+  }
+
+  setLoading(true);
 
     setLoading(true);
 
@@ -518,14 +530,21 @@ Please reach at least 5 minutes before the appointment.`
           />
 
           <input
-            type="tel"
-            placeholder="Phone Number"
-            value={customerPhone}
-            onChange={(e) =>
-              setCustomerPhone(e.target.value)
-            }
-            className="w-full bg-[#060707] border border-[#433E3B] rounded-2xl px-5 py-4 outline-none focus:border-[#C0A790]"
-          />
+  type="tel"
+  inputMode="numeric"
+  pattern="[0-9+ ]*"
+  placeholder="Phone Number"
+  value={customerPhone}
+  onChange={(e) => {
+
+    const value =
+      e.target.value.replace(/[^0-9+]/g, "");
+
+    setCustomerPhone(value);
+
+  }}
+  className="w-full bg-[#060707] border border-[#433E3B] rounded-2xl px-5 py-4 outline-none focus:border-[#C0A790]"
+/>
 
           <textarea
             placeholder="Notes (Optional)"
