@@ -296,39 +296,59 @@ export default function Home() {
 
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="space-y-4">
 
           {barbers.map((barber) => (
 
-            <div
-              key={barber.name}
-              onClick={() => setSelectedBarber(barber.name)}
-              className={`rounded-[24px] md:rounded-[35px] overflow-hidden border cursor-pointer transition ${
-                selectedBarber === barber.name
-                  ? "border-[#C0A790]"
-                  : "border-[#433E3B] hover:border-[#C0A790]"
-              }`}
-            >
+            <button
+  key={barber.name}
+  onClick={() => setSelectedBarber(barber.name)}
+  className={`w-full rounded-[24px] border transition p-3 flex items-center justify-between ${
+    selectedBarber === barber.name
+      ? "bg-[#302E2D] border-[#C0A790]"
+      : "bg-[#1A1918] border-[#433E3B] hover:border-[#C0A790]"
+  }`}
+>
 
-              <img
-                src={barber.image}
-                alt={barber.name}
-                className="w-full h-[180px] md:h-[380px] object-cover"
-              />
+  <div className="flex items-center gap-3">
 
-              <div className="bg-[#1A1918] p-4 md:p-7">
+    <img
+      src={barber.image}
+      alt={barber.name}
+      className="w-20 h-20 rounded-2xl object-cover"
+    />
 
-                <h3 className="text-xl md:text-3xl font-black">
-                  {barber.name}
-                </h3>
+    <div className="text-left">
 
-                <p className="text-[#A8A29E] mt-2 text-sm md:text-base">
-                  Professional Barber
-                </p>
+      <h3 className="text-lg font-black">
+        {barber.name}
+      </h3>
 
-              </div>
+      <p className="text-[#A8A29E] text-xs mt-1">
+        Professional Barber
+      </p>
 
-            </div>
+      <div className="flex items-center gap-1 mt-2 text-[#C0A790] text-sm">
+        ★★★★★
+      </div>
+
+    </div>
+
+  </div>
+
+  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black ${
+    selectedBarber === barber.name
+      ? "bg-[#E8D9BF] text-black"
+      : "bg-[#302E2D]"
+  }`}>
+
+    {selectedBarber === barber.name
+      ? "✓"
+      : "+"}
+
+  </div>
+
+</button>
 
           ))}
 
@@ -507,25 +527,64 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
           {[
-            "Excellent service and premium environment.",
-            "Best barber experience in the city.",
-            "Professional staff and luxury feel."
-          ].map((review, index) => (
+            {
+    name: "Ahsan",
+    stars: 5,
+    review:
+      "Excellent service and premium environment.",
+  },
+
+  {
+    name: "Hamza",
+    stars: 4,
+    review:
+      "Best barber experience in the city.",
+  },
+
+  {
+    name: "Usman",
+    stars: 5,
+    review:
+      "Professional staff and luxury feel.",
+  },
+].map((item, index) => (
 
             <div
               key={index}
-              className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-5 md:p-8"
-            >
+  className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] md:rounded-[35px] p-5 md:p-8"
+>
 
-              <p className="text-[#C0A790] text-xl md:text-2xl">
-                ★★★★★
-              </p>
+  <div className="flex items-center justify-between">
 
-              <p className="text-[#A8A29E] text-sm md:text-lg leading-7 md:leading-9 mt-5">
-                {review}
-              </p>
+    <div>
 
-            </div>
+      <h3 className="text-lg md:text-2xl font-black">
+        {item.name}
+      </h3>
+
+      <div className="flex items-center gap-1 mt-2 text-[#C0A790] text-sm md:text-base">
+
+        {"★".repeat(item.stars)}
+
+      </div>
+
+    </div>
+
+    <div className="w-12 h-12 rounded-full bg-[#302E2D] flex items-center justify-center text-[#C0A790] font-black text-lg">
+
+      {item.name.charAt(0)}
+
+    </div>
+
+  </div>
+
+  <p className="text-[#A8A29E] text-sm md:text-lg leading-7 md:leading-9 mt-5">
+
+    {item.review}
+
+  </p>
+
+</div>
 
           ))}
 
