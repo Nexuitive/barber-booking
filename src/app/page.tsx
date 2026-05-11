@@ -472,9 +472,12 @@ Please reach at least 5 minutes before the appointment.`
         <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] p-4">
 
           <Calendar
-            onChange={(value) => setSelectedDate(value as Date)}
-            value={selectedDate}
-          />
+  minDate={new Date()}
+  onChange={(value) =>
+    setSelectedDate(value as Date)
+  }
+  value={selectedDate}
+/>
 
           <div className="grid grid-cols-2 gap-3 mt-6">
 
