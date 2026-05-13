@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+
 import {
   Loader2,
   Scissors,
@@ -18,9 +21,6 @@ import {
 } from "firebase/firestore";
 
 import { db } from "./firebase";
-
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 
 export default function Home() {
 
@@ -42,6 +42,7 @@ export default function Home() {
     useState<string[]>([]);
 
   const services = [
+
     {
       name: "Hair Cut",
       price: "Rs 800",
@@ -71,9 +72,11 @@ export default function Home() {
       price: "Rs 1800",
       icon: Sparkles,
     },
+
   ];
 
   const barbers = [
+
     {
       name: "Ahmed",
       image: "/images/barber1.jpg",
@@ -88,17 +91,35 @@ export default function Home() {
       name: "Danish",
       image: "/images/barber3.jpg",
     },
+
   ];
 
   const timings = [
+
     "10:00 AM",
+    "10:30 AM",
+
     "11:00 AM",
+    "11:30 AM",
+
     "12:00 PM",
+    "12:30 PM",
+
     "1:00 PM",
+    "1:30 PM",
+
     "2:00 PM",
+    "2:30 PM",
+
     "3:00 PM",
+    "3:30 PM",
+
     "4:00 PM",
+    "4:30 PM",
+
     "5:00 PM",
+    "5:30 PM",
+
   ];
 
   useEffect(() => {
@@ -117,12 +138,20 @@ export default function Home() {
 
         const booking = doc.data();
 
+        const bookingDateTime = new Date(
+          `${booking.date} ${booking.time}`
+        );
+
+        const now = new Date();
+
         if (
 
           booking.barber === selectedBarber &&
 
           booking.date ===
-            selectedDate.toDateString()
+            selectedDate.toDateString() &&
+
+          bookingDateTime > now
 
         ) {
 
@@ -176,30 +205,59 @@ export default function Home() {
 
   const handleBooking = async () => {
 
-    if (
-      selectedServices.length === 0 ||
-      !selectedBarber ||
-      !selectedTime ||
-      !customerName ||
-      !customerPhone
-    ) {
+    if (selectedServices.length === 0) {
 
       setSuccessMessage(
-        "Please complete all booking details."
+        "Please select at least one service."
       );
 
       return;
     }
 
-    if (customerPhone.length < 11) {
+    if (!selectedBarber) {
 
       setSuccessMessage(
-        "Please enter a valid phone number."
+        "Please choose a barber."
       );
 
       return;
-
     }
+
+    if (!selectedTime) {
+
+      setSuccessMessage(
+        "Please select appointment time."
+      );
+
+      return;
+    }
+
+    if (!customerName) {
+
+      setSuccessMessage(
+        "Please enter your name."
+      );
+
+      return;
+    }
+
+    if (!customerPhone) {
+
+  setSuccessMessage(
+    "Please enter phone number."
+  );
+
+  return;
+}
+
+if (customerPhone.length < 11) {
+
+  setSuccessMessage(
+    "Please enter a valid phone number."
+  );
+
+  return;
+}
 
     setLoading(true);
 
@@ -224,34 +282,6 @@ export default function Home() {
 
         createdAt:
           new Date().toISOString(),
-
-      });
-
-      await fetch("/api/send-whatsapp", {
-
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-
-          customerName,
-          customerPhone,
-          notes,
-
-          services: selectedServices,
-
-          barber: selectedBarber,
-
-          date: selectedDate.toDateString(),
-
-          time: selectedTime,
-
-          total: totalAmount,
-
-        }),
 
       });
 
@@ -290,17 +320,43 @@ Please reach at least 5 minutes before the appointment.`
 
   return (
 
-    <main className="bg-[#060707] text-[#F5F5F5] min-h-screen overflow-hidden">
+    <main className="bg-[#050505] text-white min-h-screen overflow-hidden">
+
 
       {/* NAVBAR */}
 
-      <nav className="border-b border-[#433E3B] sticky top-0 z-50 bg-[#060707]/90 backdrop-blur-xl">
+      <nav className="border-b border-[#2B2825] sticky top-0 z-50 bg-[#050505]/90 backdrop-blur-2xl">
 
-        <div className="max-w-7xl mx-auto px-4 md:px-12 py-5 flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-center">
 
-          <h1 className="text-2xl md:text-4xl font-black tracking-tight">
-            Trim<span className="text-[#C0A790]">Book</span>
-          </h1>
+          <div className="flex items-center gap-3">
+
+            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#E4BE88] to-[#8B5E34] flex items-center justify-center shadow-[0_0_30px_rgba(228,190,136,0.25)]">
+
+              <Scissors
+                className="w-5 h-5 text-black"
+                strokeWidth={2.5}
+              />
+
+            </div>
+
+            <div className="text-left">
+
+              <h1 className="text-[24px] leading-none font-black tracking-wide text-white">
+
+                Trim<span className="text-[#E4BE88]">Book</span>
+
+              </h1>
+
+              <p className="text-[8px] uppercase tracking-[4px] text-[#8B7355] mt-1">
+
+                Premium Barber Booking
+
+              </p>
+
+            </div>
+
+          </div>
 
         </div>
 
@@ -309,43 +365,71 @@ Please reach at least 5 minutes before the appointment.`
 
       {/* HERO */}
 
-      <section className="max-w-7xl mx-auto px-4 md:px-12 pt-10 pb-10 md:pt-20 md:pb-16 text-center">
+      <section className="relative overflow-hidden">
 
-        <p className="text-[#C0A790] uppercase tracking-[4px] font-semibold mb-4 text-[10px] md:text-sm">
-          Premium Barber Booking
-        </p>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-[#050505]"></div>
 
-        <h1 className="text-[42px] leading-[46px] md:text-7xl md:leading-[90px] font-black">
+        <div className="relative max-w-7xl mx-auto px-5 pt-14 pb-14 text-center">
 
-          Book Your
-          <br />
+          <div className="w-20 h-20 mx-auto rounded-full border border-[#E4BE88]/40 bg-[#111111]/70 backdrop-blur-xl flex items-center justify-center shadow-[0_0_40px_rgba(228,190,136,0.15)] mb-6">
 
-          Appointment
+            <Scissors
+              className="w-8 h-8 text-[#E4BE88]"
+              strokeWidth={2.2}
+            />
 
-        </h1>
+          </div>
 
-        <p className="text-[#A8A29E] text-sm md:text-lg leading-7 md:leading-9 mt-5 max-w-3xl mx-auto">
+          <p className="text-[#E4BE88] uppercase tracking-[5px] font-semibold text-[9px] mb-5">
 
-          Select services, choose barber and confirm your booking instantly.
+            Premium Barber Booking
 
-        </p>
+          </p>
+
+          <h1 className="text-[40px] leading-[42px] md:text-[52px] md:leading-[52px] font-black tracking-tight text-white">
+
+            Book Your
+
+            <span className="block text-[#E4BE88] mt-1">
+
+              Appointment
+
+            </span>
+
+          </h1>
+
+          <div className="w-16 h-[2px] bg-[#E4BE88] mx-auto mt-6 mb-6 rounded-full"></div>
+
+          <p className="text-[#A1A1AA] text-[14px] leading-7 max-w-md mx-auto font-medium">
+
+            Select services, choose barber and confirm your booking instantly.
+
+          </p>
+
+        </div>
 
       </section>
 
 
       {/* SERVICES */}
 
-      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
+      <section className="max-w-5xl mx-auto px-4 pb-14">
 
-        <div className="mb-8">
+        <div className="text-center mb-8">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
+          <p className="text-[#E4BE88] uppercase tracking-[5px] font-semibold text-[9px] mb-3">
+
             Services
+
           </p>
 
-          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
+          <h2 className="text-[24px] leading-[28px] md:text-[38px] md:leading-[40px] font-black text-white">
+
             Select Services
+
           </h2>
+
+          <div className="w-14 h-[2px] bg-[#E4BE88] mx-auto mt-4 rounded-full"></div>
 
         </div>
 
@@ -356,48 +440,62 @@ Please reach at least 5 minutes before the appointment.`
             <button
               key={service.name}
               onClick={() => toggleService(service.name)}
-              className={`w-full rounded-[24px] border transition-all duration-300 p-4 flex items-center justify-between ${
+              className={`w-full rounded-[26px] border transition-all duration-300 p-4 flex items-center justify-between shadow-2xl
+
+              ${
                 selectedServices.includes(service.name)
-                  ? "bg-[#302E2D] border-[#C0A790] scale-[1.01]"
-                  : "bg-[#1A1918] border-[#433E3B] hover:border-[#C0A790]"
+
+                  ? "bg-gradient-to-br from-[#2A241D] to-[#141414] border-[#E4BE88] scale-[1.01]"
+
+                  : "bg-gradient-to-br from-[#161616] to-[#0E0E0E] border-[#2B2825] hover:border-[#E4BE88]"
               }`}
             >
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 min-w-0">
 
-                <div className="w-14 h-14 rounded-2xl bg-[#302E2D] border border-[#433E3B] flex items-center justify-center">
+                <div className="w-14 h-14 rounded-full border border-[#3A332B] bg-[#1C1B1A] flex items-center justify-center shrink-0 shadow-inner">
 
                   <service.icon
-                    className="w-7 h-7 text-[#C0A790]"
+                    className="w-6 h-6 text-[#E4BE88]"
                     strokeWidth={2.2}
                   />
 
                 </div>
 
-                <div className="text-left">
+                <div className="text-left min-w-0">
 
-                  <h3 className="text-[16px] md:text-2xl font-black">
+                  <h3 className="text-[18px] md:text-[24px] leading-none font-black text-white truncate">
+
                     {service.name}
+
                   </h3>
 
-                  <p className="text-[#A8A29E] mt-1 text-xs md:text-base">
-                    Premium Grooming Service
+                  <p className="text-[#A1A1AA] mt-2 text-[12px] truncate">
+
+                    Premium Grooming
+
                   </p>
 
                 </div>
 
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 shrink-0 ml-2">
 
-                <p className="text-lg md:text-2xl font-black text-[#C0A790]">
+                <p className="text-[15px] md:text-[18px] leading-[20px] font-black text-[#E4BE88] whitespace-nowrap text-right">
+
                   {service.price}
+
                 </p>
 
-                <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-sm md:text-xl font-black transition ${
+                <div className={`w-10 h-10 rounded-full border flex items-center justify-center text-base font-black transition-all
+
+                ${
                   selectedServices.includes(service.name)
-                    ? "bg-[#E8D9BF] text-black"
-                    : "bg-[#302E2D]"
+
+                    ? "bg-[#E4BE88] border-[#E4BE88] text-black"
+
+                    : "border-[#6B5A45] text-[#E4BE88]"
                 }`}>
 
                   {selectedServices.includes(service.name)
@@ -419,17 +517,23 @@ Please reach at least 5 minutes before the appointment.`
 
       {/* BARBERS */}
 
-      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
+      <section className="max-w-5xl mx-auto px-4 pb-14">
 
-        <div className="mb-8">
+        <div className="text-center mb-8">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
+          <p className="text-[#E4BE88] uppercase tracking-[5px] font-semibold text-[9px] mb-3">
+
             Barbers
+
           </p>
 
-          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
-            Choose Barber
+          <h2 className="text-[24px] leading-[28px] md:text-[38px] md:leading-[40px] font-black text-white">
+
+            Choose Your Barber
+
           </h2>
+
+          <div className="w-14 h-[2px] bg-[#E4BE88] mx-auto mt-4 rounded-full"></div>
 
         </div>
 
@@ -440,43 +544,57 @@ Please reach at least 5 minutes before the appointment.`
             <button
               key={barber.name}
               onClick={() => setSelectedBarber(barber.name)}
-              className={`w-full rounded-[24px] border transition-all duration-300 p-3 flex items-center justify-between ${
+              className={`w-full rounded-[26px] border transition-all duration-300 p-4 flex items-center justify-between shadow-2xl
+
+              ${
                 selectedBarber === barber.name
-                  ? "bg-[#302E2D] border-[#C0A790] scale-[1.01]"
-                  : "bg-[#1A1918] border-[#433E3B] hover:border-[#C0A790]"
+
+                  ? "bg-gradient-to-br from-[#2A241D] to-[#141414] border-[#E4BE88] scale-[1.01]"
+
+                  : "bg-gradient-to-br from-[#161616] to-[#0E0E0E] border-[#2B2825] hover:border-[#E4BE88]"
               }`}
             >
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 min-w-0">
 
                 <img
                   src={barber.image}
                   alt={barber.name}
-                  className="w-20 h-20 rounded-2xl object-cover"
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border border-[#E4BE88]/40"
                 />
 
-                <div className="text-left">
+                <div className="text-left min-w-0">
 
-                  <h3 className="text-lg font-black">
+                  <h3 className="text-[18px] md:text-[24px] leading-none font-black text-white">
+
                     {barber.name}
+
                   </h3>
 
-                  <p className="text-[#A8A29E] text-xs mt-1">
-                    Professional Barber
+                  <p className="text-[#A1A1AA] mt-2 text-[12px]">
+
+                    Senior Barber
+
                   </p>
 
-                  <div className="flex items-center gap-1 mt-2 text-[#C0A790] text-sm">
-                    ★★★★★
+                  <div className="flex items-center gap-2 mt-2 text-[#E4BE88] text-xs font-semibold">
+
+                    ★ 4.9 (120+)
+
                   </div>
 
                 </div>
 
               </div>
 
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black ${
+              <div className={`w-10 h-10 rounded-full border flex items-center justify-center text-base font-black transition-all
+
+              ${
                 selectedBarber === barber.name
-                  ? "bg-[#E8D9BF] text-black"
-                  : "bg-[#302E2D]"
+
+                  ? "bg-[#E4BE88] border-[#E4BE88] text-black"
+
+                  : "border-[#6B5A45] text-[#E4BE88]"
               }`}>
 
                 {selectedBarber === barber.name
@@ -494,23 +612,29 @@ Please reach at least 5 minutes before the appointment.`
       </section>
 
 
-      {/* DATE & TIME */}
+      {/* DATE */}
 
-      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
+      <section className="max-w-5xl mx-auto px-4 pb-14">
 
-        <div className="mb-8">
+        <div className="text-center mb-8">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
+          <p className="text-[#E4BE88] uppercase tracking-[5px] font-semibold text-[9px] mb-3">
+
             Schedule
+
           </p>
 
-          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
+          <h2 className="text-[24px] leading-[28px] md:text-[38px] md:leading-[40px] font-black text-white">
+
             Select Date & Time
+
           </h2>
+
+          <div className="w-14 h-[2px] bg-[#E4BE88] mx-auto mt-4 rounded-full"></div>
 
         </div>
 
-        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] p-4">
+        <div className="bg-gradient-to-br from-[#161616] to-[#0D0D0D] border border-[#2B2825] rounded-[26px] p-4">
 
           <Calendar
             minDate={new Date()}
@@ -527,33 +651,75 @@ Please reach at least 5 minutes before the appointment.`
               const isBooked =
                 bookedSlots.includes(time);
 
+              const now = new Date();
+
+              const convertTo24Hour = (time12h: string) => {
+
+                const [time, modifier] =
+                  time12h.split(" ");
+
+                let [hours, minutes] =
+                  time.split(":");
+
+                if (hours === "12") {
+                  hours = "00";
+                }
+
+                if (modifier === "PM") {
+                  hours =
+                    (
+                      parseInt(hours, 10) + 12
+                    ).toString();
+                }
+
+                return `${hours}:${minutes}`;
+
+              };
+
+              const slotTime =
+                convertTo24Hour(time);
+
+              const currentTime =
+                `${String(now.getHours()).padStart(2, "0")}:${String(
+                  now.getMinutes()
+                ).padStart(2, "0")}`;
+
+              const isPastTime =
+
+                selectedDate.toDateString() ===
+                  now.toDateString() &&
+
+                slotTime < currentTime;
+
               return (
 
                 <button
                   key={time}
-
-                  disabled={isBooked}
-
+                  disabled={isBooked || isPastTime}
                   onClick={() =>
                     setSelectedTime(time)
                   }
-
-                  className={`py-3 text-sm rounded-2xl font-bold transition border
+                  className={`py-4 text-[13px] rounded-2xl font-bold transition border
 
                   ${
-                    isBooked
+                    isBooked || isPastTime
+
                       ? "bg-[#302E2D] text-[#666] border-[#302E2D] opacity-40 cursor-not-allowed"
 
                       : selectedTime === time
 
-                      ? "bg-[#E8D9BF] text-black border-[#E8D9BF]"
+                      ? "bg-[#E4BE88] text-black border-[#E4BE88]"
 
-                      : "border-[#433E3B] hover:border-[#C0A790]"
+                      : "border-[#433E3B] hover:border-[#E4BE88]"
                   }`}
                 >
 
                   {isBooked
                     ? `${time} • Booked`
+
+                    : isPastTime
+                    ? `${time} • Closed`
+
                     : time}
 
                 </button>
@@ -569,23 +735,29 @@ Please reach at least 5 minutes before the appointment.`
       </section>
 
 
-      {/* CUSTOMER DETAILS */}
+      {/* DETAILS */}
 
-      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
+      <section className="max-w-5xl mx-auto px-4 pb-14">
 
-        <div className="mb-8">
+        <div className="text-center mb-8">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-3 text-[10px]">
+          <p className="text-[#E4BE88] uppercase tracking-[5px] font-semibold text-[9px] mb-3">
+
             Customer
+
           </p>
 
-          <h2 className="text-[32px] leading-[36px] md:text-5xl font-black">
+          <h2 className="text-[24px] leading-[28px] md:text-[38px] md:leading-[40px] font-black text-white">
+
             Your Details
+
           </h2>
+
+          <div className="w-14 h-[2px] bg-[#E4BE88] mx-auto mt-4 rounded-full"></div>
 
         </div>
 
-        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] p-5 space-y-5">
+        <div className="bg-gradient-to-br from-[#161616] to-[#0D0D0D] border border-[#2B2825] rounded-[26px] p-4 space-y-4">
 
           <input
             type="text"
@@ -594,24 +766,19 @@ Please reach at least 5 minutes before the appointment.`
             onChange={(e) =>
               setCustomerName(e.target.value)
             }
-            className="w-full bg-[#060707] border border-[#433E3B] rounded-2xl px-5 py-4 outline-none focus:border-[#C0A790]"
+            className="w-full bg-[#090909] border border-[#2B2825] rounded-2xl px-5 py-4 outline-none focus:border-[#E4BE88]"
           />
 
           <input
             type="tel"
-            inputMode="numeric"
-            pattern="[0-9+ ]*"
             placeholder="Phone Number"
             value={customerPhone}
-            onChange={(e) => {
-
-              const value =
-                e.target.value.replace(/[^0-9+]/g, "");
-
-              setCustomerPhone(value);
-
-            }}
-            className="w-full bg-[#060707] border border-[#433E3B] rounded-2xl px-5 py-4 outline-none focus:border-[#C0A790]"
+            onChange={(e) =>
+              setCustomerPhone(
+                e.target.value.replace(/[^0-9]/g, "")
+              )
+            }
+            className="w-full bg-[#090909] border border-[#2B2825] rounded-2xl px-5 py-4 outline-none focus:border-[#E4BE88]"
           />
 
           <textarea
@@ -620,7 +787,7 @@ Please reach at least 5 minutes before the appointment.`
             onChange={(e) =>
               setNotes(e.target.value)
             }
-            className="w-full bg-[#060707] border border-[#433E3B] rounded-2xl px-5 py-4 outline-none focus:border-[#C0A790] min-h-[120px]"
+            className="w-full bg-[#090909] border border-[#2B2825] rounded-2xl px-5 py-4 outline-none focus:border-[#E4BE88] min-h-[110px]"
           />
 
         </div>
@@ -630,15 +797,17 @@ Please reach at least 5 minutes before the appointment.`
 
       {/* BOOKING */}
 
-      <section className="max-w-5xl mx-auto px-4 md:px-12 pb-16 md:pb-20">
+      <section className="max-w-5xl mx-auto px-4 pb-20">
 
-        <div className="bg-[#1A1918] border border-[#433E3B] rounded-[24px] p-6 text-center">
+        <div className="bg-gradient-to-br from-[#161616] to-[#0D0D0D] border border-[#2B2825] rounded-[26px] p-5 text-center">
 
-          <p className="text-[#C0A790] uppercase tracking-[3px] font-semibold mb-4 text-[10px]">
+          <p className="text-[#E4BE88] uppercase tracking-[5px] font-semibold mb-4 text-[9px]">
+
             Ready To Book?
+
           </p>
 
-          <h2 className="text-[32px] leading-[36px] md:text-6xl font-black">
+          <h2 className="text-[34px] leading-[36px] md:text-[42px] md:leading-[44px] font-black text-white">
 
             Confirm Your
             <br />
@@ -647,13 +816,13 @@ Please reach at least 5 minutes before the appointment.`
 
           </h2>
 
-          <div className="mt-8">
+          <div className="mt-7">
 
-            <p className="text-[#A8A29E] text-base">
+            <p className="text-[#A1A1AA] text-sm">
               Total Amount
             </p>
 
-            <h2 className="text-3xl md:text-5xl font-black text-[#C0A790] mt-3">
+            <h2 className="text-4xl md:text-5xl font-black text-[#E4BE88] mt-3">
               Rs {totalAmount}
             </h2>
 
@@ -662,7 +831,7 @@ Please reach at least 5 minutes before the appointment.`
           <button
             onClick={handleBooking}
             disabled={loading}
-            className="mt-8 w-full bg-[#E8D9BF] hover:bg-[#C0A790] transition-all duration-300 text-black px-8 py-4 rounded-2xl text-base font-black flex items-center justify-center gap-3 disabled:opacity-60 hover:scale-[1.02]"
+            className="mt-7 w-full bg-[#E4BE88] hover:bg-[#D6A96A] transition-all duration-300 text-black px-8 py-4 rounded-2xl text-base font-black flex items-center justify-center gap-3 disabled:opacity-60"
           >
 
             {loading ? (
@@ -685,15 +854,15 @@ Please reach at least 5 minutes before the appointment.`
 
           {successMessage && (
 
-            <div className="mt-6 bg-[#060707] border border-[#C0A790] rounded-2xl p-5 text-center">
+            <div className="mt-5 bg-[#090909] border border-[#E4BE88] rounded-2xl p-5 text-center">
 
-              <h3 className="text-[#C0A790] font-black text-lg mb-3">
+              <h3 className="text-[#E4BE88] font-black text-base mb-3">
 
                 Appointment Status
 
               </h3>
 
-              <p className="text-[#F5F5F5] leading-7 whitespace-pre-line">
+              <p className="text-[#F5F5F5] leading-7 whitespace-pre-line text-sm">
 
                 {successMessage}
 
