@@ -365,9 +365,15 @@ Please reach at least 5 minutes before the appointment.`
 
       {/* HERO */}
 
-      <section className="relative overflow-hidden">
+      <section
+  className="relative overflow-hidden bg-cover bg-center"
+  style={{
+    backgroundImage:
+      "url('/barber-bg.jpg')",
+  }}
+>
 
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-[#050505]"></div>
+        <div className="absolute inset-0 bg-black/70"></div>
 
         <div className="relative max-w-7xl mx-auto px-5 pt-14 pb-14 text-center">
 
@@ -875,9 +881,85 @@ Please reach at least 5 minutes before the appointment.`
         </div>
 
       </section>
+    {/* CONTACT */}
 
-    </main>
+<section className="max-w-5xl mx-auto px-4 pb-20">
 
+  <div className="bg-gradient-to-br from-[#161616] to-[#0D0D0D] border border-[#2B2825] rounded-[26px] overflow-hidden">
+
+    <div className="p-6 text-center">
+
+      <p className="text-[#E4BE88] uppercase tracking-[5px] font-semibold text-[9px] mb-4">
+
+        Contact & Location
+
+      </p>
+
+      <h2 className="text-[26px] leading-[30px] md:text-[40px] md:leading-[42px] font-black text-white">
+
+        Visit Our Studio
+
+      </h2>
+
+      <div className="w-14 h-[2px] bg-[#E4BE88] mx-auto mt-5 rounded-full"></div>
+
+    </div>
+
+    <div className="px-6 pb-6 space-y-5">
+
+      <div className="bg-[#090909] border border-[#2B2825] rounded-2xl p-5">
+
+        <p className="text-[#E4BE88] text-sm font-bold mb-2">
+
+          Address
+
+        </p>
+
+        <p className="text-[#A1A1AA] leading-7 text-sm">
+
+          Tariq Road, Karachi, Pakistan
+
+        </p>
+
+      </div>
+
+      <div className="bg-[#090909] border border-[#2B2825] rounded-2xl p-5">
+
+        <p className="text-[#E4BE88] text-sm font-bold mb-2">
+
+          Contact
+
+        </p>
+
+        <p className="text-[#A1A1AA] leading-7 text-sm">
+
+          +92 334 3447256
+
+        </p>
+
+      </div>
+
+      <div className="rounded-2xl overflow-hidden border border-[#2B2825]">
+
+        <iframe
+          src="https://www.google.com/maps?q=Tariq+Road+Karachi&output=embed"
+          width="100%"
+          height="260"
+          loading="lazy"
+          className="w-full"
+        ></iframe>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+</main>
+    
   );
 
 }
